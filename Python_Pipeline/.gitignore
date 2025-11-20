@@ -1,5 +1,4 @@
 mlruns
-venv
 __pycache__
 dataset
 project_models_rf
@@ -11,3 +10,4 @@ src/exception/__pycache__
 src/pipeline/__pycache__
 src/logging/__pycache__
 src/utils/__pycache__
+venv
