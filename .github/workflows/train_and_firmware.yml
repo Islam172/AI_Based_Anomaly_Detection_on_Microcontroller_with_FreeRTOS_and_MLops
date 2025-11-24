@@ -115,7 +115,7 @@ jobs:
             -no-indexer \
             -data "$WORKSPACE_PATH" \
             -import "$PWD/${{ env.FIRMWARE_DIR }}" \
-            -build "$PROJECT_NAME" || {
+            -build "$PROJECT_NAME/Debug" || {
               echo "MCUXpresso build failed"
               exit 1
             }
