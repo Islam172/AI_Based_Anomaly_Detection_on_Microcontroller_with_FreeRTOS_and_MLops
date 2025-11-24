@@ -20,7 +20,7 @@ jobs:
     env:
       PYTHON_DIR: Python_Pipeline
       FIRMWARE_DIR: frdmmcxn947_Project
-      PYTHON_VERSION: '3.9.'          
+      PYTHON_VERSION: '3.9'          
       VENV_DIR: .venv_ci             # virtuelles Env NUR für CI
       LATEST_ARTIFACT_DIR: ''
 
@@ -119,17 +119,7 @@ jobs:
               exit 1
             }
 
-      # --- 8) OPTIONAL: Firmware flashen ---
-      # Nur aktivieren, wenn du sicher bist, dass Board angeschlossen ist
-      # und du die passende CLI kennst (z.B. crt_emu_cm_redlink o.ä.).
-      - name: Flash firmware to board (optional)
-        if: false   # <- auf true setzen, wenn bereit
-        shell: bash
-        run: |
-          echo "TODO: Flash command eintragen, z.B. crt_emu_cm_redlink ..."
-          # Beispiel (PLATZHALTER!):
-          # /path/to/crt_emu_cm_redlink -flash-load-exec "$FIRMWARE_DIR/Debug/Firmware.axf" \
-          #   -p LPC55S69 -vendor NXP ...
+      
 
       # --- 8) OPTIONAL: Firmware flashen ---
       - name: Flash firmware to board (optional)
