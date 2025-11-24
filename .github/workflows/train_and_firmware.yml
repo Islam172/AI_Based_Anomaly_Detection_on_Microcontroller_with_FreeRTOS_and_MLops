@@ -1,0 +1,169 @@
+name: train-and-firmware
+
+on:
+  push:
+    branches: [ main ]
+    # Optional: nur triggern wenn Python-Pipeline oder Dataset sich ändert
+    paths:
+      - 'Python_Pipeline/**'
+      - 'Firmware/**'
+      - '.github/workflows/**'
+
+  # Manuell starten im GitHub UI
+  workflow_dispatch: {}
+
+jobs:
+  train_and_update_firmware:
+    # Dein self-hosted Runner (Mac mit Python + MCUXpresso + Board)
+    runs-on: self-hosted
+
+    env:
+      PYTHON_DIR: Python_Pipeline
+      FIRMWARE_DIR: frdmmcxn947_Project
+      PYTHON_VERSION: '3.9.'          
+      VENV_DIR: .venv_ci             # virtuelles Env NUR für CI
+      LATEST_ARTIFACT_DIR: ''
+
+    steps:
+      # --- 1) Code holen ---
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- 2) Python-Version bereitstellen (falls nötig) ---
+      # Funktioniert auch auf self-hosted, wenn die Version installiert ist.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      # --- 3) Virtuelle Umgebung + Dependencies ---
+      - name: Create venv and install dependencies
+        working-directory: ${{ env.PYTHON_DIR }}
+        shell: bash
+        run: |
+          python -m venv ${{ env.VENV_DIR }}
+          source ${{ env.VENV_DIR }}/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # --- 4) Trainings-Pipeline ausführen ---
+      # Ruft deine src/pipeline/training_pipeline.py auf
+      - name: Run training pipeline
+        working-directory: ${{ env.PYTHON_DIR }}
+        shell: bash
+        run: |
+          source ${{ env.VENV_DIR }}/bin/activate
+          python -m main.py
+
+      # --- 5) Neuesten Artifacts-Ordner finden ---
+      # artifacts/<timestamp> mit größtem Timestamp
+      - name: Find newest artifact directory
+        id: find_latest
+        shell: bash
+        working-directory: ${{ env.PYTHON_DIR }}
+        run: |
+          latest=$(ls -1d artifacts/* | sort -r | head -n 1)
+          echo "LATEST_ARTIFACT_DIR=$latest" >> $GITHUB_ENV
+          echo "Latest artifact dir: $latest"
+
+      # --- 6) axis_scaler.h + model.h + model_info.json ins Firmware-Projekt kopieren ---
+      # Passe die Pfade im Firmware-Projekt an deine Struktur an!
+      - name: Copy headers into Firmware project
+        shell: bash
+        run: |
+          # Quelle (Python-Pipeline)
+          SRC_AXIS_SCALER="${{ env.PYTHON_DIR }}/${{ env.LATEST_ARTIFACT_DIR }}/feature_extraction/axis_scaler.h"
+          SRC_MODEL_H="${{ env.PYTHON_DIR }}/${{ env.LATEST_ARTIFACT_DIR }}/model_trainer/model.h"
+
+          # Ziel (MCUXpresso-Projekt) :
+          AXIS_SCALER_DIR="${{ env.FIRMWARE_DIR }}/source/inf_eng/emlearn"
+          MODEL_DIR="${{ env.FIRMWARE_DIR }}/source/models/emlearn"
+          
+
+          cp "$SRC_AXIS_SCALER" "$AXIS_SCALER_DIR/axis_scaler.h"
+          cp "$SRC_MODEL_H"     "$MODEL_DIR/model.h"
+          
+
+          echo "Copied:"
+          
+
+      # --- 7) Firmware builden (MCUXpresso Headless) ---
+      # Dieser Teil ist ein Template – du musst den Pfad zur mcuxpresso-CLI
+      # und den Projekt-Namen an dein Setup anpassen.
+      - name: Build firmware (MCUXpresso headless)
+        shell: bash
+        run: |
+          # Pfad zur MCUXpresso IDE (MAC)
+          MCUXPRESSO_CLI="/Applications/MCUXpressoIDE_25.6.136/ide/MCUXpressoIDE.app/Contents/MacOS/mcuxpressoide"
+
+          # Name des Firmware-Projekts (wie in MCUXpresso angezeigt)
+          PROJECT_NAME="frdmmcxn947_ml_state_monitor"
+
+
+
+          # Workspace, den MCUXpresso headless verwenden soll
+          WORKSPACE_PATH="$PWD/mcux_workspace"
+      
+          echo "Creating workspace directory: $WORKSPACE_PATH"
+          mkdir -p "$WORKSPACE_PATH"
+      
+          echo "Running headless build for: $PROJECT_NAME"
+          "$MCUXPRESSO_CLI" \
+            --launcher.suppressErrors \
+            -nosplash \
+            -application org.eclipse.cdt.managedbuilder.core.headlessbuild \
+            -data "$WORKSPACE_PATH" \
+            -import "$PWD/${{ env.FIRMWARE_DIR }}" \
+            -build "$PROJECT_NAME" || {
+              echo "MCUXpresso build failed"
+              exit 1
+            }
+
+      # --- 8) OPTIONAL: Firmware flashen ---
+      # Nur aktivieren, wenn du sicher bist, dass Board angeschlossen ist
+      # und du die passende CLI kennst (z.B. crt_emu_cm_redlink o.ä.).
+      - name: Flash firmware to board (optional)
+        if: false   # <- auf true setzen, wenn bereit
+        shell: bash
+        run: |
+          echo "TODO: Flash command eintragen, z.B. crt_emu_cm_redlink ..."
+          # Beispiel (PLATZHALTER!):
+          # /path/to/crt_emu_cm_redlink -flash-load-exec "$FIRMWARE_DIR/Debug/Firmware.axf" \
+          #   -p LPC55S69 -vendor NXP ...
+
+      # --- 8) OPTIONAL: Firmware flashen ---
+      - name: Flash firmware to board (optional)
+        if: false          # <- auf true setzen, wenn du automatisch flashen willst
+        shell: bash
+        env:
+          PROJECT_NAME: frdmmcxn947_ml_state_monitor
+        run: |
+          # Pfad zum Redlink-Flasher (MAC)
+          CRT_EMU="/Applications/LinkServer_25.6.131/binaries/crt_emu_cm_redlink"
+      
+          # Workspace, der im vorherigen Build-Step angelegt wurde
+          WORKSPACE_PATH="$PWD/mcux_workspace"
+      
+          # AXF-Datei des Projekts
+          AXF_FILE="$WORKSPACE_PATH/$PROJECT_NAME/Debug/$PROJECT_NAME.axf"
+      
+          echo "Using AXF: $AXF_FILE"
+      
+          if [ ! -f "$AXF_FILE" ]; then
+            echo "ERROR: AXF file not found: $AXF_FILE"
+            exit 1
+          fi
+      
+          echo "Flashing firmware to MCXN947..."
+      
+          "$CRT_EMU" \
+            -flash-load-exec "$AXF_FILE" \
+            -p MCXN947 \
+            -vendor NXP \
+            -reset hard || {
+              echo "Flashing failed"
+              exit 1
+            }
+      
+          echo "Flashing successful!"
+      
