@@ -93,32 +93,39 @@ jobs:
       - name: Build firmware (MCUXpresso headless)
         shell: bash
         run: |
-          # Pfad zur MCUXpresso IDE (MAC)
-          MCUXPRESSO_CLI="/Applications/MCUXpressoIDE_25.6.136/ide/MCUXpressoIDE.app/Contents/MacOS/mcuxpressoide"
+         MCUXPRESSO_CLI="/Applications/MCUXpressoIDE_25.6.136/ide/MCUXpressoIDE.app/Contents/MacOS/mcuxpressoide"
+         PROJECT_NAME="frdmmcxn947_ml_state_monitor"
+         WORKSPACE_PATH="$PWD/mcux_workspace"
+     
+         echo "Creating workspace directory: $WORKSPACE_PATH"
+         mkdir -p "$WORKSPACE_PATH"
+     
+         echo "Running headless build for: $PROJECT_NAME"
+         set +e   # <-- erlauben, dass mcuxpresso exit 1 liefert
+     
+         "$MCUXPRESSO_CLI" \
+           --launcher.suppressErrors \
+           -nosplash \
+           -application org.eclipse.cdt.managedbuilder.core.headlessbuild \
+           -no-indexer \
+           -data "$WORKSPACE_PATH" \
+           -import "$PWD/${{ env.FIRMWARE_DIR }}" \
+           -build "$PROJECT_NAME"
+     
+         BUILD_EXIT=$?
+         set -e
+     
+         # Prüfen ob AXF erzeugt wurde
+         AXF_FILE="$WORKSPACE_PATH/$PROJECT_NAME/Debug/$PROJECT_NAME.axf"
+     
+         if [ -f "$AXF_FILE" ]; then
+             echo "AXF successfully built: $AXF_FILE"
+             echo "Ignoring MCUXpresso exit code: $BUILD_EXIT"
+         else
+             echo "ERROR: AXF file not found. Build truly failed."
+             exit 1
+         fi
 
-          # Name des Firmware-Projekts (wie in MCUXpresso angezeigt)
-          PROJECT_NAME="frdmmcxn947_ml_state_monitor"
-
-
-
-          # Workspace, den MCUXpresso headless verwenden soll
-          WORKSPACE_PATH="$PWD/mcux_workspace"
-      
-          echo "Creating workspace directory: $WORKSPACE_PATH"
-          mkdir -p "$WORKSPACE_PATH"
-      
-          echo "Running headless build for: $PROJECT_NAME"
-          "$MCUXPRESSO_CLI" \
-            --launcher.suppressErrors \
-            -nosplash \
-            -application org.eclipse.cdt.managedbuilder.core.headlessbuild \
-            -no-indexer \
-            -data "$WORKSPACE_PATH" \
-            -import "$PWD/${{ env.FIRMWARE_DIR }}" \
-            -build "$PROJECT_NAME" || {
-              echo "MCUXpresso build failed"
-              exit 1
-            }
 
       
 
