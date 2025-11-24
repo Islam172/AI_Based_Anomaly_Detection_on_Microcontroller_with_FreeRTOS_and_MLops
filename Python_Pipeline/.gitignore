@@ -1,6 +1,5 @@
 mlruns
 __pycache__
-dataset
 project_models_rf
 src/__pycache__
 src/components/__pycache__
