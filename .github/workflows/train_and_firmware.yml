@@ -6,7 +6,7 @@ on:
     # Optional: nur triggern wenn Python-Pipeline oder Dataset sich ändert
     paths:
       - 'Python_Pipeline/**'
-      - 'Firmware/**'
+      - 'frdmmcxn947_Project/**'
       - '.github/workflows/**'
 
   # Manuell starten im GitHub UI
