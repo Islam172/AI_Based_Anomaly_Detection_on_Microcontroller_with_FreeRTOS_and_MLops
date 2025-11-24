@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           source ${{ env.VENV_DIR }}/bin/activate
-          python -m main.py
+          python3 main.py
 
       # --- 5) Neuesten Artifacts-Ordner finden ---
       # artifacts/<timestamp> mit größtem Timestamp
