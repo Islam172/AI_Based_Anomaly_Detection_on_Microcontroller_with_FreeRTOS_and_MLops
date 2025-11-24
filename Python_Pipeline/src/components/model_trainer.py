@@ -20,7 +20,7 @@ from sklearn.metrics import (
     classification_report,
 )
 from sklearn.model_selection import GridSearchCV
-from src.utils.utils import _def
+
 
 from emlearn import convert as eml_convert
 
