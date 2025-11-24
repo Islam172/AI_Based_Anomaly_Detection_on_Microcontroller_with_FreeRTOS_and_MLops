@@ -122,31 +122,28 @@ jobs:
 
       
 
-      # --- 8) OPTIONAL: Firmware flashen ---
+        # --- 8) OPTIONAL: Firmware flashen ---
       - name: Flash firmware to board (optional)
-        if: success()
+        if: false          # erst auf true setzen, wenn du wirklich automatisch flashen willst
         shell: bash
         env:
           PROJECT_NAME: frdmmcxn947_ml_state_monitor
         run: |
           # Pfad zum Redlink-Flasher (MAC)
           CRT_EMU="/Applications/LinkServer_25.6.131/binaries/crt_emu_cm_redlink"
-      
-          # Workspace, der im vorherigen Build-Step angelegt wurde
-          WORKSPACE_PATH="$PWD/mcux_workspace"
-      
-          # AXF-Datei des Projekts
-          AXF_FILE="$WORKSPACE_PATH/$PROJECT_NAME/Debug/$PROJECT_NAME.axf"
-      
+    
+          # AXF-Datei direkt aus deinem Repo-Projekt
+          AXF_FILE="$PWD/${{ env.FIRMWARE_DIR }}/Debug/$PROJECT_NAME.axf"
+    
           echo "Using AXF: $AXF_FILE"
-      
+    
           if [ ! -f "$AXF_FILE" ]; then
             echo "ERROR: AXF file not found: $AXF_FILE"
             exit 1
           fi
-      
+    
           echo "Flashing firmware to MCXN947..."
-      
+    
           "$CRT_EMU" \
             -flash-load-exec "$AXF_FILE" \
             -p MCXN947 \
@@ -155,6 +152,7 @@ jobs:
               echo "Flashing failed"
               exit 1
             }
-      
+    
           echo "Flashing successful!"
+
       
