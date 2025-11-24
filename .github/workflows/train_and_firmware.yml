@@ -112,6 +112,7 @@ jobs:
             --launcher.suppressErrors \
             -nosplash \
             -application org.eclipse.cdt.managedbuilder.core.headlessbuild \
+            -Dorg.eclipse.cdt.core.indexer=none \
             -data "$WORKSPACE_PATH" \
             -import "$PWD/${{ env.FIRMWARE_DIR }}" \
             -build "$PROJECT_NAME" || {
