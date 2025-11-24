@@ -124,7 +124,7 @@ jobs:
 
       # --- 8) OPTIONAL: Firmware flashen ---
       - name: Flash firmware to board (optional)
-        if: false          # <- auf true setzen, wenn du automatisch flashen willst
+        if: success()
         shell: bash
         env:
           PROJECT_NAME: frdmmcxn947_ml_state_monitor
