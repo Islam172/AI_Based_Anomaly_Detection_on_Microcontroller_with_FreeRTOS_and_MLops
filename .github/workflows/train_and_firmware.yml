@@ -76,7 +76,7 @@ jobs:
           SRC_MODEL_H="${{ env.PYTHON_DIR }}/${{ env.LATEST_ARTIFACT_DIR }}/model_trainer/model.h"
 
           # Ziel (MCUXpresso-Projekt) :
-          AXIS_SCALER_DIR="${{ env.FIRMWARE_DIR }}/source/inf_eng/emlearn"
+          AXIS_SCALER_DIR="${{ env.FIRMWARE_DIR }}/source/inf-eng/emlearn"
           MODEL_DIR="${{ env.FIRMWARE_DIR }}/source/models/emlearn"
           
 
