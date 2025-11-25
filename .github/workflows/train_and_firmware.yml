@@ -3,7 +3,7 @@ name: train-and-firmware
 on:
   push:
     branches: [ main ]
-    # Optional: nur triggern wenn Python-Pipeline oder Dataset sich ändert
+    
     paths:
       - 'Python_Pipeline/**'
       - 'frdmmcxn947_Project/**'
@@ -14,13 +14,13 @@ on:
 
 jobs:
   train_and_update_firmware:
-    # Dein self-hosted Runner (Mac mit Python + MCUXpresso + Board)
+    # self-hosted Runner 
     runs-on: self-hosted
 
     env:
       PYTHON_DIR: Python_Pipeline
       FIRMWARE_DIR: frdmmcxn947_Project         
-      VENV_DIR: .venv_ci             # virtuelles Env NUR für CI
+      VENV_DIR: .venv_ci             
       LATEST_ARTIFACT_DIR: ''
 
     steps:
@@ -28,8 +28,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- 2) Python-Version bereitstellen (falls nötig) ---
-      # Funktioniert auch auf self-hosted, wenn die Version installiert ist.
+      # --- 2) Python-Version bereitstellen 
+      
       - name: Use system Python
         shell: bash
         run: |
@@ -47,7 +47,7 @@ jobs:
           pip install -r requirements.txt
 
       # --- 4) Trainings-Pipeline ausführen ---
-      # Ruft deine src/pipeline/training_pipeline.py auf
+      
       - name: Run training pipeline
         working-directory: ${{ env.PYTHON_DIR }}
         shell: bash
@@ -66,8 +66,8 @@ jobs:
           echo "LATEST_ARTIFACT_DIR=$latest" >> $GITHUB_ENV
           echo "Latest artifact dir: $latest"
 
-      # --- 6) axis_scaler.h + model.h + model_info.json ins Firmware-Projekt kopieren ---
-      # Passe die Pfade im Firmware-Projekt an deine Struktur an!
+      # --- 6) axis_scaler.h + model.h  ins Firmware-Projekt kopieren 
+     
       - name: Copy headers into Firmware project
         shell: bash
         run: |
@@ -87,9 +87,8 @@ jobs:
           echo "Copied:"
           
 
-      # --- 7) Firmware builden (MCUXpresso Headless) ---
-      # Dieser Teil ist ein Template – du musst den Pfad zur mcuxpresso-CLI
-      # und den Projekt-Namen an dein Setup anpassen.
+      # --- 7) Firmware builden (MCUXpresso Headless) 
+      
       - name: Build firmware (MCUXpresso headless)
         shell: bash
         run: |
