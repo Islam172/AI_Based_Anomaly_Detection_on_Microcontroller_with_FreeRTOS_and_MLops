@@ -1,8 +1,3 @@
-/*
- * Copyright 2024 NXP
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
 
 #ifndef _APP_CONFIG_H
 #define _APP_CONFIG_H
@@ -45,8 +40,8 @@
  * AVAILABLE inference engine to be used
  */
 
-#define SENSOR_COLLECT_INFENG_EMLEARN           3
-#define SENSOR_COLLECT_INFENG_EMLEARN_GMM       4
+#define SENSOR_COLLECT_INFENG_EMLEARN           1
+
 /*
  * DO NOT CHANGE!
  * AVAILABLE data format to be used to feed the model
@@ -64,16 +59,10 @@
  */
 #define SENSOR_COLLECT_ACTION                   SENSOR_COLLECT_RUN_INFERENCE
 
-#if SENSOR_COLLECT_ACTION == SENSOR_COLLECT_LOG_EXT
-/*
- * USER CONFIGURATION!
- * SELECT where to log the sensor data
- * Set to 0 to redirect the sensor data to the debug console.
- * Set to 1 to redirect the sensor data to the SD card.
- */
-#define SENSOR_COLLECT_LOG_EXT_SDCARD           0   // Redirect the log to SD card, otherwise print to console
 
-#elif SENSOR_COLLECT_ACTION == SENSOR_COLLECT_RUN_INFERENCE
+
+
+#if SENSOR_COLLECT_ACTION == SENSOR_COLLECT_RUN_INFERENCE
 /*
  * USER CONFIGURATION!
  * SELECT inference behavior
@@ -85,15 +74,6 @@
 #define SENSOR_COLLECT_DATA_FORMAT              SENSOR_COLLECT_DATA_FORMAT_INTERLEAVED
 
 
-
-
-
-
-
-/*
- * DO NOT CHANGE!
- */
-//#define SOURCE_STATIC_ACCEL_DATA                SENSOR_FEED_VALIDATION_DATA
 
 /*
  * DO NOT CHANGE!

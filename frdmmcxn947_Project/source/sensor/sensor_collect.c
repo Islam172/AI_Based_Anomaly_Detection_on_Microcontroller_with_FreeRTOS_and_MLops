@@ -18,12 +18,8 @@
 
 
 #if SENSOR_COLLECT_ACTION == SENSOR_COLLECT_RUN_INFERENCE
-  #if SENSOR_COLLECT_RUN_INFENG == SENSOR_COLLECT_INFENG_TENSORFLOW
-    #include "tfmodel.h"
-    status_t (*SNS_MODEL_Init)(void) = &TFMODEL_Init;
-    status_t (*SNS_MODEL_RunInference)(void *inputData, size_t size, int8_t *predClass, int32_t *tinf_us, uint8_t verbose) =
-             &TFMODEL_RunInference;
-  #elif SENSOR_COLLECT_RUN_INFENG == SENSOR_COLLECT_INFENG_EMLEARN
+  
+  #if SENSOR_COLLECT_RUN_INFENG == SENSOR_COLLECT_INFENG_EMLEARN
     #include "inf-eng/emlearn/emlearn_model.h"
     status_t (*SNS_MODEL_Init)(void) = &EMLEARN_MODEL_Init;
     status_t (*SNS_MODEL_RunInference)(void *inputData, size_t size, int8_t *predClass, int32_t *tinf_us, uint8_t verbose) =
@@ -104,22 +100,11 @@ static void SENSOR_Collect_RunInf_Task(void *pvParameters)
             {
                 float sens_val;
 
-                /* WICHTIG:
-                 * - TensorFlow-Pfad erwartet evtl. vor-normalisierte Rohdaten (3 Werte).
-                 * - microMLgen-Pfad erwartet UNNORMIERTE Rohdaten (Fenster wird intern featurized + z-normalized).
-                 */
-            #if SENSOR_COLLECT_RUN_INFENG == SENSOR_COLLECT_INFENG_TENSORFLOW
-                #if SENSOR_RAW_DATA_NORMALIZE
-                    sens_val = (((float)sensorData.rawDataSensor[i]) - model_mean[i]) / model_std[i];
-                #else
-                    sens_val = (float)sensorData.rawDataSensor[i];
-
-                #endif
-            #elif SENSOR_COLLECT_RUN_INFENG == SENSOR_COLLECT_INFENG_EMLEARN
-                /* Niemals hier normalisieren – micromlgen_engine macht Features + Z-Norm selbst */
+                
+            #if SENSOR_COLLECT_RUN_INFENG == SENSOR_COLLECT_INFENG_EMLEARN
+                
                 sens_val = (float)sensorData.rawDataSensor[i];
-            #else
-                sens_val = (float)sensorData.rawDataSensor[i];
+            
             #endif
 
             #if SENSOR_COLLECT_DATA_FORMAT == SENSOR_COLLECT_DATA_FORMAT_INTERLEAVED
@@ -223,22 +208,6 @@ void MainTask(void *pvParameters)
 
 
     status_t status = kStatus_Success;
-
-
-
-    /* Define the init structure for the output LED pin*/
-            gpio_pin_config_t led_config = {
-                kGPIO_DigitalOutput,
-                0,
-            };
-
-
-    /* Init output LED GPIO. */
-            GPIO_PinInit(BOARD_LED_BLUE_GPIO, BOARD_LED_BLUE_GPIO_PIN, &led_config);
-            /*GPIO_PinInit(BOARD_LED_RED_GPIO, BOARD_LED_RED_GPIO_PIN, &led_config);*/
-
-    /*LEDs off */
-    /*LED_BLUE_OFF();*/
 
 
     /* Sensor-HAL initialisieren (I2C, FXLS8974 verifizieren, ODR, FSR, …) */
