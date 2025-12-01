@@ -18,15 +18,7 @@ from src.exception.exception import Exception
 
 
 class DataValidation:
-    """
-    DataValidation für dein Vibrations-Projekt.
-
-    Aufgaben:
-    1. Schema aus schema.yaml lesen (Spalten, numerische Spalten, etc.).
-    2. Spaltenanzahl / -namen gegen Schema prüfen.
-    3. KS-Test (numerische Spalten) zwischen normal und anomal als „Drift-Report“.
-    4. Validierte CSVs + YAML-Report abspeichern.
-    """
+    
 
     def __init__(
         self,
@@ -40,7 +32,7 @@ class DataValidation:
             # schema.yaml laden
             self._schema_config = read_yaml_file(self.config.schema_file_path)
         except Exception as e:
-            # du kannst hier auch deine eigene Exception-Klasse nutzen
+            
             raise Exception(e, sys)
 
     # ---------- Hilfsfunktionen ----------
@@ -99,13 +91,8 @@ class DataValidation:
 
     def initiate_data_validation(self) -> DataValidationArtifact:
         """
-        Orchestriert den kompletten Data-Validation-Schritt:
+        Orchestriert den kompletten Data-Validation-Schritt
 
-        1. ds_norm, ds_anom, ds_all (aus DataIngestionArtifact) laden.
-        2. Spalten gegen schema.yaml validieren.
-        3. KS-Drift-Test zwischen ds_norm (base) und ds_anom (current).
-        4. validierte CSVs + drift_report.yaml speichern.
-        5. DataValidationArtifact zurückgeben.
         """
         try:
             # Pfade aus DataIngestionArtifact

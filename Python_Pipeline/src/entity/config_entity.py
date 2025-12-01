@@ -187,9 +187,9 @@ class ModelTrainerConfig:
         )
 
         # MCU Codegeneration:
-        #   artifacts/<timestamp>/model_trainer/codegen/
+        
 
-        # emlearn Header: model.h
+        
         self.emlearn_header_file_path: str = os.path.join(
             self.model_trainer_dir,
             pipeline_constants.EMLEARN_MODEL_FILE_NAME  # z.B. "model.h"

@@ -35,7 +35,7 @@ from src.logging.logger import logging
 from src.exception.exception import Exception
 
 import mlflow
-# wenn du Dagshub verwenden willst, kannst du das später ergänzen
+
 
 
 class ModelTrainer:
@@ -215,8 +215,7 @@ class ModelTrainer:
         """
         Entspricht Notebook Cell 7: emlearn-Konvertierung + model_info.json
         """
-        #codegen_dir = Path(self.cfg.codegen_dir)
-        #codegen_dir.mkdir(parents=True, exist_ok=True)
+        
 
         model_h_path = Path(self.cfg.emlearn_header_file_path)
 
@@ -228,7 +227,7 @@ class ModelTrainer:
         )
         cmodel.save("rf_model", str(model_h_path))
 
-        # Metadata (wie im Notebook)
+        # Metadata 
         info = {
             "fs_hz": pipeline_constants.FS_HZ,
             "win": pipeline_constants.WIN,
@@ -247,9 +246,7 @@ class ModelTrainer:
 
         return model_h_path, info_path
 
-    # ----------------------------------------------------
-    # Public API: entspricht "initiate_model_trainer"
-    # ----------------------------------------------------
+    
     def initiate_model_trainer(self) -> ModelTrainerArtifact:
         """
         Orchestriert:

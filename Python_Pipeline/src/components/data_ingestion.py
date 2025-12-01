@@ -11,8 +11,7 @@ from src.exception.exception import Exception
 
 class DataIngestion:
     """
-    Implementiert die Notebook-Logik:
-
+    
         ds_norm = load_folder(NORMAL_DIR, "normal")
         ds_anom = load_folder(ANOM_DIR, "anomalie")
 
@@ -30,7 +29,6 @@ class DataIngestion:
 
     def _load_folder(self, folder: Union[str, Path], label: str) -> pd.DataFrame:
         """
-        Exakte Umsetzung deines Notebook-load_folder(...)
 
         Gibt ein DataFrame mit Spalten:
             ['label', 'time_ms', 'Ax', 'Ay', 'Az', 'filename']
@@ -67,7 +65,7 @@ class DataIngestion:
             if rows:
                 return pd.concat(rows, ignore_index=True)
     
-            # leerer Default mit genau derselben Spaltenstruktur wie im Notebook
+            
             return pd.DataFrame(columns=["label", "time_ms", "Ax", "Ay", "Az", "filename"])
         except Exception as e:
             raise Exception(e,sys)
@@ -84,7 +82,7 @@ class DataIngestion:
             data_ingestion_dir = Path(self.cfg.data_ingestion_dir)
             data_ingestion_dir.mkdir(parents=True, exist_ok=True)
     
-            # 1) ds_norm und ds_anom wie im Notebook erzeugen
+            # 1) ds_norm und ds_anom erzeugen
             ds_norm = self._load_folder(self.cfg.normal_data_dir, self.cfg.normal_label)
             ds_anom = self._load_folder(self.cfg.anomal_data_dir, self.cfg.anomal_label)
     

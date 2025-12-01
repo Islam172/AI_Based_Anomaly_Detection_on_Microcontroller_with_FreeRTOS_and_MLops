@@ -7,7 +7,7 @@ BAUD_RATE = 115200
 DEFAULT_DURATION_S = 30
 BASE_DIR = 'dataset'
 
-# >>> Stelle das auf deine reale Samplerate ein (Timer / SENSOR_COLLECT_RATE_HZ) <<<
+
 SAMPLE_HZ = 200           # 200 Hz  => 5 ms pro Sample
 PERIOD_MS = int(1000 / SAMPLE_HZ)
 

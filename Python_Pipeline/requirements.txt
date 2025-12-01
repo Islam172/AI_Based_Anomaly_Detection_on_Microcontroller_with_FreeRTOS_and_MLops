@@ -6,12 +6,12 @@ scikit-learn==1.6.1
 emlearn==0.23.1
 pyaml==25.7.0
 
-# mlflow + Abhängigkeit pyarrow (wichtig für dein früheres Installationsproblem)
+# mlflow + Abhängigkeit pyarrow 
 mlflow==3.1.4
 pyarrow==20.0.0
 
-# Serielle Schnittstelle – du nutzt aktuell das Paket "serial"
+# Serielle Schnittstelle 
 serial==0.0.97
 
-# build tools – kann unfixiert bleiben oder du pinnst es manuell
+# build tools
 setuptools
