@@ -13,36 +13,7 @@ RTOS: FreeRTOS
 IDE: MCUXpresso (headless build)
 
 ##Projektstruktur
-├── .github/
-│   └── workflows/
-│       └── train_and_firmware.yml     # CI/CD: Training → Build → Flash
-│
-├── Python_Pipeline/
-│   ├── src/                           # Pipeline-Quellcode (modulare Klassen)
-│   ├── dataset/                       # Aufgezeichnete CSV-Dateien
-│   ├── artifacts/                     # Ausgaben je Pipeline-Lauf
-│   ├── data_schema/                   # Erwartetes Datenschema für Validierung
-│   ├── logs/                          # Lauf-Logs
-│   ├── Data_collection.py             # Serielle Datenerfassung vom Board
-│   ├── main.py                        # Pipeline-Einstiegspunkt
-│   ├── notebook.ipynb                 # Explorative Analyse
-│   ├── requirements.txt
-│   └── setup.py
-│
-└── frdmmcxn947_Project/
-    └── source/
-        ├── inf-eng/emlearn/
-        │   ├── axis_scaler.h          # Z-Score-Parameter (auto-generiert)
-        │   ├── emlearn_model.c        # Inferenz-Wrapper
-        │   └── emlearn_model.h
-        ├── models/emlearn/
-        │   └── model.h                # Konvertiertes RF-Modell (auto-generiert)
-        ├── sensor/
-        │   ├── sensor_collect.c/.h    # Datenerfassung + Pufferverwaltung
-        │   └── sensor_raw.c/.h        # Sensorzugriff
-        └── main.c                 # App-Einstiegspunkt
-        ├── app_config.h           # Konfiguration (Schwellwert, Fenstergröße, ...)
-        ├── FreeRTOSConfig.h
+![](assets/Projektstruktur.png)
             
 
 NXP SDK-Ordner (CMSIS, board, drivers, freertos, device, ...) sind nicht aufgeführt.
