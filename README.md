@@ -85,6 +85,8 @@ Jede Pipeline-Stufe ist als eigene Klasse implementiert mit einer Config-Klasse 
 <p align="center">
 <img src="assets/mlops.png" width="900">
 </p>
+
+
 Stufen:
 
 Data Ingestion: CSV-Dateien laden und organisieren
@@ -102,7 +104,9 @@ Der Workflow train_and_firmware.yml startet automatisch bei Änderungen an der P
 <p align="center">
 <img src="assets/githubactions.png" width="300">
 </p>
+
 Schritte:
+
 
 Set up job: Python-Umgebung + Abhängigkeiten installieren
 
