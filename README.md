@@ -6,6 +6,7 @@ Das System überwacht einen Lüfter mit einem 3-Achsen-Beschleunigungssensor (AC
 <p align="center">
 <img src="assets/system.png" width="400">
 </p>
+
 ## Hardware
 
 Komponenten:
@@ -32,10 +33,12 @@ NXP SDK-Ordner (CMSIS, board, drivers, freertos, device, ...) sind nicht aufgef�
 ### 1. Datenerfassung
 
 Data_collection.py empfängt Sensordaten über die serielle Schnittstelle und speichert sie als CSV. Auf dem Board läuft ein FreeRTOS-Task, der per Timer zyklisch Sensordaten liest und entweder in die Inferenz-Pipeline oder über UART weiterleitet.
+
 <p align="center">
-<img src="assets/data.png" width="600">
+<img src="assets/data.png" width="900">
 </p>
-###2. Vorverarbeitung
+
+### 2. Vorverarbeitung
 
 Z-Score-Normalisierung — Mittelwert und Standardabweichung werden ausschließlich aus Normal-Daten berechnet und auf alle Daten angewendet
 
@@ -51,7 +54,7 @@ Die C-Implementierung auf dem Mikrocontroller muss exakt dieser Vorverarbeitung 
 Random Forest (scikit-learn) mit automatischer Hyperparametersuche via GridSearchCV:
 
 <p align="center">
-<img src="assets/model.png" width="600">
+<img src="assets/model.png" width="400">
 </p>
 Alle Experimente werden mit MLflow protokolliert (Hyperparameter, Metriken, Artefakte).
 
