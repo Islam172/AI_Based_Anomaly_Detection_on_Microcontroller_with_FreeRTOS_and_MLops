@@ -3,8 +3,9 @@ TinyML-Pipeline zur Anomalieerkennung auf einem Embedded System. Beschleunigungs
 
 ## Überblick
 Das System überwacht einen Lüfter mit einem 3-Achsen-Beschleunigungssensor (ACCEL 4 CLICK, I2C3) und klassifiziert Vibrationsmuster in Echtzeit in zwei Zustände: normal und anomalie.
-<img src="assets/system.png" width="600">
-
+<p align="center">
+<img src="assets/system.png" width="400">
+</p>
 ## Hardware
 
 Komponenten:
@@ -19,8 +20,9 @@ IDE: MCUXpresso (headless build)
 
 ## Projektstruktur
 
+<p align="center">
 <img src="assets/Projektstruktur.png" width="600">
-            
+</p>            
 
 NXP SDK-Ordner (CMSIS, board, drivers, freertos, device, ...) sind nicht aufgeführt.
 
@@ -30,8 +32,9 @@ NXP SDK-Ordner (CMSIS, board, drivers, freertos, device, ...) sind nicht aufgef�
 ### 1. Datenerfassung
 
 Data_collection.py empfängt Sensordaten über die serielle Schnittstelle und speichert sie als CSV. Auf dem Board läuft ein FreeRTOS-Task, der per Timer zyklisch Sensordaten liest und entweder in die Inferenz-Pipeline oder über UART weiterleitet.
+<p align="center">
 <img src="assets/data.png" width="600">
-
+</p>
 ###2. Vorverarbeitung
 
 Z-Score-Normalisierung — Mittelwert und Standardabweichung werden ausschließlich aus Normal-Daten berechnet und auf alle Daten angewendet
@@ -47,8 +50,9 @@ Die C-Implementierung auf dem Mikrocontroller muss exakt dieser Vorverarbeitung 
 
 Random Forest (scikit-learn) mit automatischer Hyperparametersuche via GridSearchCV:
 
+<p align="center">
 <img src="assets/model.png" width="600">
-
+</p>
 Alle Experimente werden mit MLflow protokolliert (Hyperparameter, Metriken, Artefakte).
 
 ### 4. Modellkonvertierung
@@ -75,8 +79,9 @@ f) Inferenzzeit in Mikrosekunden messen (optional ausgeben)
 
 Jede Pipeline-Stufe ist als eigene Klasse implementiert mit einer Config-Klasse (Parameter, Pfade) und einer Artifact-Klasse (Ausgaben für die nächste Stufe).
 
-<img src="assets/mlops.png" width="600">
-
+<p align="center">
+<img src="assets/mlops.png" width="900">
+</p>
 Stufen:
 
 Data Ingestion: CSV-Dateien laden und organisieren
@@ -91,8 +96,9 @@ Model Training & Evaluation: GridSearchCV, MLflow-Logging, emlearn-Export
 
 Der Workflow train_and_firmware.yml startet automatisch bei Änderungen an der Pipeline, der Firmware oder den Workflow-Dateien — oder manuell über die GitHub-Oberfläche.
 
-<img src="assets/githubactions.png" width="600">
-
+<p align="center">
+<img src="assets/githubactions.png" width="300">
+</p>
 Schritte:
 
 Set up job: Python-Umgebung + Abhängigkeiten installieren
